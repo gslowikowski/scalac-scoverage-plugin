@@ -70,9 +70,11 @@ lazy val core = Project("scalac-scoverage-core", file("scalac-scoverage-core"))
 lazy val runtime = Project("scalac-scoverage-runtime", file("scalac-scoverage-runtime"))
     .settings(name := "scalac-scoverage-runtime")
     .settings(appSettings: _*)
+/*GSTEMP - remove this (rewrite tests for JUnit):
     .settings(libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % ScalatestVersion % "test"
   ))
+*/
 
 lazy val plugin = Project("scalac-scoverage-plugin", file("scalac-scoverage-plugin"))
     .settings(name := "scalac-scoverage-plugin")
@@ -80,9 +82,12 @@ lazy val plugin = Project("scalac-scoverage-plugin", file("scalac-scoverage-plug
     .settings(unmanagedSourceDirectories in Compile += (scalaSource in Compile in core).value) // scalac plugin cannot have dependencies
     .settings(libraryDependencies ++= Seq(
     "org.mockito" % "mockito-all" % MockitoVersion % "test",
+/*GSTEMP - remove this (rewrite tests for JUnit):
     "org.scalatest" %% "scalatest" % ScalatestVersion % "test",
+*/
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
-  )).settings(libraryDependencies ++= {
+  ))/*GSTEMP - remove this (add macros to test harness):
+    .settings(libraryDependencies ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, scalaMajor)) if scalaMajor > 10 => Seq(
         "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0" % "test"
@@ -91,7 +96,7 @@ lazy val plugin = Project("scalac-scoverage-plugin", file("scalac-scoverage-plug
         "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2" % "test"
       )
     }
-  })
+  })*/
 
 lazy val report = Project("scalac-scoverage-report", file("scalac-scoverage-report"))
     .dependsOn(core)
