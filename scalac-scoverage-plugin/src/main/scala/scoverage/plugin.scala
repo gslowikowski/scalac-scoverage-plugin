@@ -228,7 +228,7 @@ class ScoverageInstrumentationComponent(val global: Global, extraAfterPhase: Opt
     def isSymbolIncluded(symbol: Symbol): Boolean = coverageFilter.isSymbolIncluded(symbol.fullNameString)
 
     def updateLocation(t: Tree) {
-      Location(global)(t) match {
+      GlobalLocation(global)(t) match {
         case Some(loc) => this.location = loc
         case _ => reporter.warning(t.pos, s"[warn] Cannot update location for $t")
       }

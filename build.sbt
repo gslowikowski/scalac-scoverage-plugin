@@ -2,9 +2,6 @@ import sbt._
 import sbt.Keys._
 import sbtrelease.ReleasePlugin.autoImport._
 import com.typesafe.sbt.pgp.PgpKeys
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-import org.scalajs.sbtplugin.cross.CrossProject
-import org.scalajs.sbtplugin.cross.CrossType
 
 val Org = "org.scoverage"
 val MockitoVersion = "1.10.19"
@@ -61,28 +58,26 @@ lazy val root = Project("scalac-scoverage", file("."))
     .settings(name := "scalac-scoverage")
     .settings(appSettings: _*)
     .settings(publishArtifact := false)
-    .aggregate(plugin, runtime.jvm, runtime.js)
+    .aggregate(core, plugin, runtime, report)
 
-lazy val runtime = CrossProject("scalac-scoverage-runtime", file("scalac-scoverage-runtime"), CrossType.Full)
+lazy val core = Project("scalac-scoverage-core", file("scalac-scoverage-core"))
+    .settings(name := "scalac-scoverage-core")
+    .settings(appSettings: _*)
+    .settings(libraryDependencies ++= Seq(
+    "org.scalatest" %% "scalatest" % ScalatestVersion % "test"
+  ))
+
+lazy val runtime = Project("scalac-scoverage-runtime", file("scalac-scoverage-runtime"))
     .settings(name := "scalac-scoverage-runtime")
     .settings(appSettings: _*)
-    .jvmSettings(
-      libraryDependencies ++= Seq(
-      "org.mockito" % "mockito-all" % MockitoVersion % "test",
+    .settings(libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % ScalatestVersion % "test"
-      )
-    )
-    .jsSettings(
-      libraryDependencies += "org.scalatest" %%% "scalatest" % ScalatestVersion % "test",
-      scalaJSStage := FastOptStage
-    )
-
-lazy val `scalac-scoverage-runtimeJVM` = runtime.jvm
-lazy val `scalac-scoverage-runtimeJS` = runtime.js
+  ))
 
 lazy val plugin = Project("scalac-scoverage-plugin", file("scalac-scoverage-plugin"))
     .settings(name := "scalac-scoverage-plugin")
     .settings(appSettings: _*)
+    .settings(unmanagedSourceDirectories in Compile += (scalaSource in Compile in core).value) // scalac plugin cannot have dependencies
     .settings(libraryDependencies ++= Seq(
     "org.mockito" % "mockito-all" % MockitoVersion % "test",
     "org.scalatest" %% "scalatest" % ScalatestVersion % "test",
@@ -90,11 +85,25 @@ lazy val plugin = Project("scalac-scoverage-plugin", file("scalac-scoverage-plug
   )).settings(libraryDependencies ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, scalaMajor)) if scalaMajor > 10 => Seq(
-        "org.scala-lang.modules" %% "scala-xml" % "1.0.5",
         "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0" % "test"
       )
       case _ => Seq(
         "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2" % "test"
       )
+    }
+  })
+
+lazy val report = Project("scalac-scoverage-report", file("scalac-scoverage-report"))
+    .dependsOn(core)
+    .settings(name := "scalac-scoverage-report")
+    .settings(appSettings: _*)
+    .settings(libraryDependencies ++= Seq(
+    "org.scalatest" %% "scalatest" % ScalatestVersion % "test"
+  )).settings(libraryDependencies ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, scalaMajor)) if scalaMajor > 10 => Seq(
+        "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
+      )
+      case _ => Nil
     }
   })

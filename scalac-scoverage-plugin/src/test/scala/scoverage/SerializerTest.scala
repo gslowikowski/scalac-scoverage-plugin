@@ -3,11 +3,10 @@ package scoverage
 import java.io.StringWriter
 
 import org.scalatest.{OneInstancePerTest, FunSuite}
-import org.scalatest.mockito.MockitoSugar
 
 import scala.xml.Utility
 
-class SerializerTest extends FunSuite with MockitoSugar with OneInstancePerTest {
+class SerializerTest extends FunSuite with OneInstancePerTest {
 
   test("coverage should be serializable into xml") {
     val coverage = Coverage()

@@ -35,7 +35,7 @@ class LocationCompiler(settings: scala.tools.nsc.Settings, reporter: scala.tools
     class Transformer(unit: global.CompilationUnit) extends TypingTransformer(unit) {
 
       override def transform(tree: global.Tree) = {
-        for ( location <- Location(global)(tree) ) {
+        for ( location <- GlobalLocation(global)(tree) ) {
           locations += (tree.getClass.getSimpleName -> location)
         }
         super.transform(tree)
