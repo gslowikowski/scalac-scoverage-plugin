@@ -122,8 +122,8 @@ class ScoverageInstrumentationComponent(val global: Global, extraAfterPhase: Opt
       super.run()
       reporter.echo(s"[info] Instrumentation completed [${coverage.statements.size} statements]")
 
-      Serializer.serialize(coverage, Serializer.coverageFile(options.dataDir))
-      reporter.echo(s"[info] Wrote instrumentation file [${Serializer.coverageFile(options.dataDir)}]")
+      Serializer.serialize(coverage, IOUtils.coverageFile(options.dataDir))
+      reporter.echo(s"[info] Wrote instrumentation file [${IOUtils.coverageFile(options.dataDir)}]")
       reporter.echo(s"[info] Will write measurement data to [${options.dataDir}]")
     }
   }

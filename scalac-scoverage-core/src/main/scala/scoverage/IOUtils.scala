@@ -43,6 +43,9 @@ object IOUtils {
     }
   }
 
+  def coverageFile(dataDir: File): File = coverageFile(dataDir.getAbsolutePath)
+  def coverageFile(dataDir: String): File = new File(dataDir, Constants.CoverageFileName)
+
   /**
    * Returns the measurement file for the current thread.
    */
