@@ -79,6 +79,7 @@ lazy val runtime = Project("scalac-scoverage-runtime", file("scalac-scoverage-ru
 */
 
 lazy val plugin = Project("scalac-scoverage-plugin", file("scalac-scoverage-plugin"))
+    .dependsOn(runtime % "test")
     .settings(name := "scalac-scoverage-plugin")
     .settings(appSettings: _*)
     .settings(unmanagedSourceDirectories in Compile += (scalaSource in Compile in core).value) // scalac plugin cannot have dependencies
