@@ -63,9 +63,11 @@ lazy val root = Project("scalac-scoverage", file("."))
 lazy val core = Project("scalac-scoverage-core", file("scalac-scoverage-core"))
     .settings(name := "scalac-scoverage-core")
     .settings(appSettings: _*)
+/*GSTEMP - remove this (rewrite tests for JUnit):
     .settings(libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % ScalatestVersion % "test"
   ))
+*/
 
 lazy val runtime = Project("scalac-scoverage-runtime", file("scalac-scoverage-runtime"))
     .settings(name := "scalac-scoverage-runtime")
@@ -102,9 +104,10 @@ lazy val report = Project("scalac-scoverage-report", file("scalac-scoverage-repo
     .dependsOn(core)
     .settings(name := "scalac-scoverage-report")
     .settings(appSettings: _*)
+/*GSTEMP - remove this (rewrite tests for JUnit):
     .settings(libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % ScalatestVersion % "test"
-  )).settings(libraryDependencies ++= {
+  ))*/.settings(libraryDependencies ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, scalaMajor)) if scalaMajor > 10 => Seq(
         "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
