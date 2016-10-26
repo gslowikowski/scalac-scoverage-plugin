@@ -82,7 +82,10 @@ lazy val plugin = Project("scalac-scoverage-plugin", file("scalac-scoverage-plug
     .dependsOn(runtime % "test")
     .settings(name := "scalac-scoverage-plugin")
     .settings(appSettings: _*)
-    .settings(unmanagedSourceDirectories in Compile += (scalaSource in Compile in core).value) // scalac plugin cannot have dependencies
+    .settings( // scalac plugins cannot have dependencies
+      autoScalaLibrary := false,
+      unmanagedSourceDirectories in Compile += (scalaSource in Compile in core).value
+    )
     .settings(libraryDependencies ++= Seq(
     "org.mockito" % "mockito-all" % MockitoVersion % "test",
 /*GSTEMP - remove this (rewrite tests for JUnit):
